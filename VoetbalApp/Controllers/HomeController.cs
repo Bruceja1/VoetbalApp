@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 using VoetbalApp.Models;
+using Microsoft.AspNetCore.Authorization;
 
 namespace VoetbalApp.Controllers
 {
@@ -18,6 +19,7 @@ namespace VoetbalApp.Controllers
             return View();
         }
 
+        [Authorize(Roles = "Administrators")]
         public IActionResult Privacy()
         {
             return View();

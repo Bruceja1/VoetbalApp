@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
@@ -14,10 +15,12 @@ namespace VoetbalApp.Controllers
     public class TeamsController : Controller
     {
         private readonly ApplicationDbContext _context;
+        private readonly UserManager<IdentityUser> userManager;
 
-        public TeamsController(ApplicationDbContext context)
+        public TeamsController(ApplicationDbContext context, UserManager<IdentityUser> userManager)
         {
             _context = context;
+            this.userManager = userManager;
         }
 
         // GET: Teams      
@@ -46,7 +49,7 @@ namespace VoetbalApp.Controllers
             return View(team);
         }
 
-        
+
         // GET: Teams/Create
         public IActionResult Create()
         {
@@ -62,6 +65,12 @@ namespace VoetbalApp.Controllers
         {
             if (ModelState.IsValid)
             {
+
+                // add current user to team (ICollection<Players>)
+                // IdentityUser currentUser = await userManager.GetUserAsync(User);
+                // team.Players.Add(currentUser);
+                // team.TeamLeader = currentUser;
+                
                 _context.Add(team);
                 await _context.SaveChangesAsync();
                 return RedirectToAction(nameof(Index));
@@ -69,7 +78,7 @@ namespace VoetbalApp.Controllers
             return View(team);
         }
 
-        [Authorize(Roles = "Teamleader, Moderator")]
+        
         // GET: Teams/Edit/5
         public async Task<IActionResult> Edit(int? id)
         {
@@ -124,7 +133,6 @@ namespace VoetbalApp.Controllers
 
 
         // GET: Teams/Delete/5
-        [Authorize(Roles = "Teamleader, Moderator")]
         public async Task<IActionResult> Delete(int? id)
         {
             if (id == null || _context.Teams == null)

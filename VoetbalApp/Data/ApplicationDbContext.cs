@@ -27,11 +27,17 @@ namespace VoetbalApp.Data
                 .HasForeignKey(e => e.TeamId)
                 .IsRequired(false);
 
-            modelBuilder.Entity<Team>()
+            modelBuilder.Entity<Team>()              
                 .HasMany(e => e.Players)
                 .WithOne(e => e.Team)
                 .HasForeignKey(e => e.TeamId)
                 .IsRequired(false);
+
+            modelBuilder.Entity<Team>()
+                .HasOne(e => e.TeamLeader)
+                .WithMany()
+                .HasForeignKey(e => e.TeamLeaderId)
+                .OnDelete(DeleteBehavior.Restrict);
 
         }
     }
