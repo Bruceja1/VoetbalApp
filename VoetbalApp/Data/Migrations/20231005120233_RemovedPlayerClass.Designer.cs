@@ -3,6 +3,7 @@ using System;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using VoetbalApp.Data;
 
@@ -11,9 +12,11 @@ using VoetbalApp.Data;
 namespace VoetbalApp.Data.Migrations
 {
     [DbContext(typeof(ApplicationDbContext))]
-    partial class ApplicationDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231005120233_RemovedPlayerClass")]
+    partial class RemovedPlayerClass
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -242,6 +245,7 @@ namespace VoetbalApp.Data.Migrations
                         .HasColumnType("nvarchar(max)");
 
                     b.Property<string>("TeamLeaderId")
+                        .IsRequired()
                         .HasColumnType("nvarchar(450)");
 
                     b.HasKey("Id");
@@ -314,7 +318,8 @@ namespace VoetbalApp.Data.Migrations
                     b.HasOne("Microsoft.AspNetCore.Identity.IdentityUser", "TeamLeader")
                         .WithMany()
                         .HasForeignKey("TeamLeaderId")
-                        .OnDelete(DeleteBehavior.Restrict);
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
 
                     b.Navigation("TeamLeader");
                 });

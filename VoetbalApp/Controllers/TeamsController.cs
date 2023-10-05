@@ -63,16 +63,24 @@ namespace VoetbalApp.Controllers
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Create([Bind("Id,Name")] Team team)
         {
-            if (ModelState.IsValid)
-            {
+            Console.WriteLine(team.Name);
+            IdentityUser currentUser = await userManager.GetUserAsync(User);
+            string currentUserId = await userManager.GetUserIdAsync(currentUser);
 
-                // add current user to team (ICollection<Players>)
-                // IdentityUser currentUser = await userManager.GetUserAsync(User);
-                // team.Players.Add(currentUser);
-                // team.TeamLeader = currentUser;
-                
+            string currentUsername = currentUser.ToString();
+            Console.WriteLine(currentUsername);
+            Console.WriteLine(currentUserId);
+
+            // Huidige gebruiker toevoegen aan het team. (ICollection<IdentityUser>)
+            team.Players.Add(currentUser);
+            team.TeamLeader = currentUser;
+            team.TeamLeaderId = currentUserId;
+
+            if (ModelState.IsValid)
+            {               
                 _context.Add(team);
                 await _context.SaveChangesAsync();
+                
                 return RedirectToAction(nameof(Index));
             }
             return View(team);
